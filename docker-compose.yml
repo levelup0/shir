@@ -1,0 +1,32 @@
+version: '2'
+services:
+  app:
+    build:
+      args:
+        user: nginx
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: voz_app_image
+    container_name: voz_app_container
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+    networks:
+      - voz_app_network
+  nginx:
+    image: nginx:1.17-alpine
+    container_name: voz_app_nginx
+    restart: unless-stopped
+    ports:
+      - 8003:80
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d
+    networks:
+      - voz_app_network
+networks:
+  voz_app_network:
+    driver: bridge

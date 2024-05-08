@@ -1,0 +1,10 @@
+export default function StickerMainIcon({ w, h }) {
+  return (<svg xmlns="http://www.w3.org/2000/svg" width={w} height={h}>
+    <g fill="none" fillRule="evenodd" transform="translate(3 4)">
+      <circle cx="8.5" cy="8.5" r="9.3" stroke="#a3aab5" strokeWidth="1.6" />
+      <circle cx="5.375" cy="6.375" r="1.375" fill="#a3aab5" />
+      <circle cx="11.875" cy="6.375" r="1.375" fill="#a3aab5" transform="matrix(-1 0 0 1 23.75 0)" />
+      <path stroke="#a3aab5" strokeLinecap="round" strokeWidth="1.6" d="M4.25 10.5S4.5 13 8.5 13s4.25-2.5 4.25-2.5" />
+    </g>
+  </svg>)
+}
