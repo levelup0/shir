@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Countries;
+use App\Models\CV;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\UserChats;
@@ -101,6 +102,36 @@ class AuthenticationController extends Controller
             $newUser->user_role_id = $user_role->id;
             
             $newUser->save();
+
+            /**
+             * Тут как раз добавляем CV
+             */
+            $_files = json_decode($request->input('files'));
+
+            if (!empty($_files)) {
+                foreach ($_files as $file) {
+                    if (!is_dir(storage_path('app/files/'.$newUser->id))) {
+                        mkdir(storage_path('app/files/'.$newUser->id), 0777, true);
+                    }
+        
+                    $random_name = md5(rand(11111, 99999));
+                    $file_name = $file->file_name;
+                    $file_format = $file->file_format;
+                    $file_size = $file->file_size;
+                    $content= base64_decode($file->base64);
+                    $file = fopen(storage_path('app/files/'.$newUser->id.'/'.$random_name.'.'.$file_format), 'w');
+                    fwrite($file, $content);
+                    fclose($file);
+        
+                    $new_assets = new CV();
+                    $new_assets->user_id = $newUser->id;
+                    $new_assets->format = $file_format;
+                    $new_assets->src = $random_name.'.'.$file_format;
+                    $new_assets->size = $file_size;
+                    $new_assets->name = $file_name;
+                    $new_assets->save();
+                }
+            }
             // $user = User::create($request->toArray());
             // $token = $newUser->createToken('appToken')->accessToken;
      

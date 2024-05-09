@@ -2,7 +2,7 @@
 - Мы должны перейти в корень проекта
 
 <code>
-  cd /home/nginx/chat/chat_business
+  cd /home/nginx/ 
 </code>
 
 - Далее запуска для создание сборки:

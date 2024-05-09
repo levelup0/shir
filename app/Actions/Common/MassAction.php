@@ -5,7 +5,7 @@ namespace App\Actions\Common;
 
  
 use App\Models\Countries;
- 
+use App\Models\CV;
 use App\Models\SubscriptionMonth;
 use App\Models\SubscriptionOptions;
 use App\Models\SubscriptionPriceCurrency;
@@ -56,6 +56,10 @@ class MassAction
 
             case 'voz':
                 $model = app(Voz::class);
+            break; 
+
+            case 'cv':
+                $model = app(CV::class);
             break; 
         }
 
@@ -182,6 +186,18 @@ class MassAction
                             foreach($datas as $data)
                             {
                                 File::delete(public_path('images/tmc-object/').$data->image);
+                            }
+                        }catch(\Exception $e){
+                            Log::error($e->getMessage());
+                        }
+                    break;
+
+                    case  'cv':
+                        try{
+                            $datas = $model::whereIn('id', $ids)->get();
+                            foreach($datas as $data)
+                            {
+                                File::delete(public_path('images/cv/').$data->image);
                             }
                         }catch(\Exception $e){
                             Log::error($e->getMessage());

@@ -18,10 +18,12 @@ use App\Http\Controllers\Admin\UserProfileController;
 use App\Http\Controllers\Admin\UserRoomsController;
 use App\Http\Controllers\Api\BalanceController;
 use App\Http\Controllers\Api\CategoryVozController;
+use App\Http\Controllers\Api\CvController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SubscriptionsController as SubscriptionsControllerApi;
 use App\Http\Controllers\Api\UserSubscriptionsController;
 use App\Http\Controllers\Api\VozController;
+use App\Http\Controllers\Api\VozMainController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Lk\TmcBrandController;
@@ -118,14 +120,40 @@ Route::group([
         'store',
         'show',
         'destroy'
-    ])->middleware('auth:api');
+    ])->middleware('auth:api');;
 
     Route::post('voz/{voz}', [VozController::class, 'update'])->middleware('auth:api');
-   
+
+    /**
+     * CV
+     */
+    Route::resource('cv', CvController::class)->only([
+        'index',
+        'store',
+        'show',
+        'destroy'
+    ])->middleware('auth:api');;
+
+    Route::post('cv/{cv}', [CvController::class, 'update'])->middleware('auth:api');
+
+    Route::get('contact-assets/{id}', [CvController::class, 'contactAssets']);
+
+    /**
+     * Voz Main
+     */
+    Route::resource('voz-main', VozMainController::class)->only([
+        'index',
+        'show',
+    ]);
+
     /**
      * Mass action
      */
     Route::apiResource('mass-action', MassActionController::class);
+
+    Route::post('user-password-update', [AuthenticationController::class, 'passwordUpdate'])->middleware('auth:api');
+
+    // Route::get('contact-assets/{id}', 'Api\CvController@contactAssets');  
 });
 
 Route::group([
