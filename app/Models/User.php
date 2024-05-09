@@ -21,6 +21,14 @@ class User extends Authenticatable
         'name',
         'email',
         'avatar',
+
+        'url_telegram',
+        'date_birth',
+        'vuz',
+        'education_course',
+        'interes',
+
+
         'phone',
         'user_id_created',
         'password',
@@ -56,6 +64,13 @@ class User extends Authenticatable
         'password',
         'phone',
         'avatar',
+        
+        'url_telegram',
+        'date_birth',
+        'vuz',
+        'education_course',
+        'interes',
+
         'user_role_id',
         'user_id_created',
         'remember_token',

@@ -101,6 +101,13 @@ class AuthenticationController extends Controller
             $newUser->password = $request->input('password');
             $newUser->user_role_id = $user_role->id;
             
+            $newUser->date_birth = $request->input('date_birth');
+
+            $newUser->vuz = $request->input('vuz');
+            $newUser->education_course = $request->input('education_course');
+            $newUser->interes = $request->input('interes');
+            $newUser->url_telegram = $request->input('url_telegram');
+
             $newUser->save();
 
             /**
@@ -371,6 +378,13 @@ class AuthenticationController extends Controller
         $currentUser->business_sector = $request['business_sector'];
         $currentUser->action_sector = $request['action_sector'];
 
+        $currentUser->date_birth = $request['date_birth'];
+        $currentUser->vuz = $request['vuz'];
+        $currentUser->education_course = $request['education_course'];
+        $currentUser->interes = $request['interes'];
+        $currentUser->url_telegram = $request['url_telegram'];
+        
+        
         $currentUser->save();
 
         return response()->json([
