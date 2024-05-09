@@ -367,6 +367,7 @@ class AuthenticationController extends Controller
     {
         $currentUser->password = Hash::make($request['password']);
         $currentUser->name = $request['name'];
+        $currentUser->avatar = $request['avatar'];
         $currentUser->business_sector = $request['business_sector'];
         $currentUser->action_sector = $request['action_sector'];
 

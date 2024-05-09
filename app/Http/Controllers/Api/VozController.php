@@ -70,7 +70,7 @@ class VozController extends Controller
         // if (!is_null($languageFilterNew)) {
         //     LanguageFilter::executeNew($data, $languageFilterNew);
         // }
-        $data = $data->with(['category']);
+        $data = $data->with(['category', 'user']);
         
 
         $data->orderBy('id', "desc");
