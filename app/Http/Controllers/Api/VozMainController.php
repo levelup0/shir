@@ -91,7 +91,7 @@ class VozMainController extends Controller
 
     public function show($id)
     {
-        $data = Voz::where('id', $id)->first();
+        $data = Voz::where('id', $id)->with(['category', 'user'])->first();
         return Success::execute(['data' => $data]);
     }
 

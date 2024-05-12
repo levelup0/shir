@@ -6,17 +6,17 @@ use App\Actions\Common\DateFilter;
 use App\Actions\Common\LanguageFilter;
 use App\Actions\Common\SortData;
 use App\Actions\DeleteRes;
-use App\Actions\Voz\StoreUpdateImage;
+
 use App\Actions\Success;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Voz\StoreVozReq;
-use App\Http\Requests\Voz\UpdateVozReq;
-use App\Models\Voz;
+use App\Http\Requests\Aprove\StoreAproveReq;
+use App\Http\Requests\Aprove\UpdateAproveReq;
+use App\Models\Aprove;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class VozController extends Controller
+class AproveController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:api')->except('index', 'show');
@@ -26,19 +26,18 @@ class VozController extends Controller
     {
         $search = $request->input('search');
         $status = $request->input('status');
-        $sort = $request->input('sort');
-        $dateFilter = $request->input('date_filter');
-        $languageFilter = $request->input('language_filter');
-        $languageFilterNew = $request->input('language_filter_new');
         $limit = $request->input('limit');
-        $publish_date = $request->input('publish_date');
-        $type = $request->input('type');
-        $my = $request->input('my');
+        $user_id = $request->input('user_id');
+        $voz_id = $request->input('voz_id');
 
-        $data = Voz::query();
+        $data = Aprove::query();
 
-        if($my == 'yes'){
-            $data = $data->where("user_id", Auth::user()->id);
+        if($user_id != 'none'){
+            $data = $data->where("user_id", $user_id);
+        }
+
+        if($voz_id != 'none'){
+            $data = $data->where("voz_id", $voz_id);
         }
 
         if (!is_null($search)) {
@@ -47,11 +46,11 @@ class VozController extends Controller
             });
         }
 
-        // if ($status !== "-1") {
-        //     $data = $data->where(function ($query) use ($status) {
-        //         $query->where('status', $status);
-        //     });
-        // }
+        if ($status !== "none") {
+            $data = $data->where(function ($query) use ($status) {
+                $query->where('status', $status);
+            });
+        }
 
         // if (!is_null($type)) {
         //     $data = $data->where(function ($query) use ($type) {
@@ -59,9 +58,7 @@ class VozController extends Controller
         //     });
         // }
 
-        if (!is_null($dateFilter)) {
-            DateFilter::execute($data, json_decode($dateFilter));
-        }
+       
         
         // if (!is_null($languageFilter)) {
         //     LanguageFilter::execute($data, json_decode($languageFilter, true));
@@ -70,7 +67,7 @@ class VozController extends Controller
         // if (!is_null($languageFilterNew)) {
         //     LanguageFilter::executeNew($data, $languageFilterNew);
         // }
-        $data = $data->with(['category', 'user']);
+        $data = $data->with(['voz', 'user']);
         
 
         $data->orderBy('id', "desc");
@@ -88,41 +85,33 @@ class VozController extends Controller
         return Success::execute(['data' => $data->paginate($limit)]);
 
     }
-    public function store(StoreVozReq $request): JsonResponse
+    public function store(StoreAproveReq $request): JsonResponse
     {
         $data = $request->validated();
-        $data['user_id'] = Auth::user()->id;
-        $data['status'] = 'created';
-        $response = Voz::create($data);
-        // if ($request->hasFile('image'))
-        //     StoreUpdateImage::execute($response, $request->file('image'));
+        $response = Aprove::create($data);
 
         return Success::execute(['data' => $response]);
     }
 
-    public function update(UpdateVozReq $request, Voz $voz): JsonResponse
+    public function update(UpdateAproveReq $request, Aprove $aprove): JsonResponse
     {
-        $voz->name = $request->name;
-        $voz->description = $voz->description;
-        $voz->sector = $voz->sector;
-        $voz->publish_date = $request->publish_date;
-        $voz->end_date = $request->end_date;
-        $voz->category_voz_id = $request->category_voz_id;
-        // $voz->user_id = Auth::user()->id;
-        // $voz->status = 'created';
-        $voz->save();
+      
+        $aprove->user_id = Auth::user()->id;
+        $aprove->voz_id = $request->name;
+        $aprove->status = 'in_progress';
+        $aprove->save();
 
-        return Success::execute(['data' => $voz]);
+        return Success::execute(['data' => $aprove]);
 
     }
 
     public function show($id)
     {
-        $data = Voz::where('id', $id)->with(['category', 'user'])->first();
+        $data = Aprove::where('id', $id)->with(['voz', 'user'])->first();
         return Success::execute(['data' => $data]);
     }
 
-    public function destroy(Voz $news): JsonResponse
+    public function destroy(Aprove $news): JsonResponse
     {
         // return Error::execute("News delete is disabled");
         $news->delete();

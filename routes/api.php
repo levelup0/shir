@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\UserChatsController;
 use App\Http\Controllers\Admin\UserMessagesController;
 use App\Http\Controllers\Admin\UserProfileController;
 use App\Http\Controllers\Admin\UserRoomsController;
+use App\Http\Controllers\Api\AproveController;
 use App\Http\Controllers\Api\BalanceController;
 use App\Http\Controllers\Api\CategoryVozController;
 use App\Http\Controllers\Api\CvController;
@@ -165,6 +166,18 @@ Route::group([
         'destroy'
     ]);
     Route::post('users/{user}', [UsersController::class, 'update']);
+
+     /**
+     * Aprove
+     */
+    Route::resource('aprove', AproveController::class)->only([
+        'index',
+        'store',
+        'show',
+        'destroy'
+    ])->middleware('auth:api');;
+
+    Route::post('aprove/{aprove}', [AproveController::class, 'update'])->middleware('auth:api');
 });
 
 Route::group([
