@@ -32,18 +32,29 @@ class UsersController extends Controller
         $sort = $request->input('sort');
         $dateFilter = $request->input('date_filter');
         $limit = $request->input('limit');
+        $user_role = $request->input('user_role');
 
         //Текущий пользователь кто
         //$data = UserRole::whereIn('name', ['admin', 'storekeeper', 'employee']);
         
       //  $data = User::query();
-        $data = User::with('roles')->whereHas('roles', function ($query) use ($search){
-            $query->whereIn('name', ['admin', 'storekeeper', 'employee']);
-        });
+        if($user_role == 'all'){
+            $data = User::with('roles')->whereHas('roles', function ($query) use ($search){
+                $query->whereIn('name', ['admin', 'caller', 'employee']);
+            });
+        }else if($user_role == 'caller'){
+            $data = User::with('roles')->whereHas('roles', function ($query) use ($search){
+                $query->whereIn('name', ['caller']);
+            }); 
+        }else if($user_role == 'recipient'){
+            $data = User::with('roles')->whereHas('roles', function ($query) use ($search){
+                $query->whereIn('name', ['recipient']);
+            }); 
+        }
         
         if (!is_null($search)) {
             $data = $data->where(function ($query) use ($search) {
-                $query->where('title', 'like', '%' . $search . '%');
+                $query->where('name', 'like', '%' . $search . '%');
             });
         }
 
@@ -57,19 +68,20 @@ class UsersController extends Controller
             DateFilter::execute($data, json_decode($dateFilter));
         }
 
-        $data = $data->with(['roles']);
+        $data = $data->with(['roles','cv']);
         
-        if ($sort !== '-1') {
-            SortData::execute($data, $sort, 'title');
-        }
+        // if ($sort !== '-1') {
+        //     SortData::execute($data, $sort, 'title');
+        // }
         
-        $data = $data->exclude(['avatar']);
-
-        if($sort_by_queue_show == '1'){
-            $data->orderBy('queue_show', "asc");
-        }else{
-            $data->orderBy('id', "desc");
-        }
+        //$data = $data->exclude(['avatar']);
+        
+        $data->orderBy('id', "desc");
+        // if($sort_by_queue_show == '1'){
+        //     $data->orderBy('queue_show', "asc");
+        // }else{
+          
+        // }
 
         return Success::execute(['data' => $data->paginate($limit)]);
 

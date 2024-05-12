@@ -29,7 +29,8 @@ class User extends Authenticatable
         'interes',
 
 
-        'phone',
+         'action_sector',
+         'business_sector',
         'user_id_created',
         'password',
         'user_role_id'
@@ -62,7 +63,7 @@ class User extends Authenticatable
         'email',
         'email_verified_at',
         'password',
-        'phone',
+        // 'phone',
         'avatar',
         
         'url_telegram',
@@ -83,10 +84,11 @@ class User extends Authenticatable
         return $query->select(array_diff($this->columns, (array) $value));
     }
 
-    // public function profile()
-    // {
-    //     return $this->hasOne(UserProfile::class, "user_id", "id");
-    // }
+    public function cv()
+    {
+        return $this->hasMany(CV::class, "user_id", "id");
+    }
+    
 
     public function roles()
     {

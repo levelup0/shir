@@ -112,8 +112,8 @@ Route::group([
      */
     Route::post('buy', [UserSubscriptionsController::class, 'buy'])->middleware('auth:api');
 
-      /**
-     * Voz
+    /**
+     * Вызовы
      */
     Route::resource('voz', VozController::class)->only([
         'index',
@@ -154,6 +154,17 @@ Route::group([
     Route::post('user-password-update', [AuthenticationController::class, 'passwordUpdate'])->middleware('auth:api');
 
     // Route::get('contact-assets/{id}', 'Api\CvController@contactAssets');  
+
+     /**
+     * Users
+     */
+    Route::resource('users', UsersController::class)->only([
+        'index',
+        'store',
+        'show',
+        'destroy'
+    ]);
+    Route::post('users/{user}', [UsersController::class, 'update']);
 });
 
 Route::group([
@@ -175,16 +186,7 @@ Route::group([
     Route::apiResource('mass-action', MassActionController::class);
 
 
-    /**
-     * Users
-     */
-    Route::resource('users', UsersController::class)->only([
-        'index',
-        'store',
-        'show',
-        'destroy'
-    ]);
-    Route::post('users/{user}', [UsersController::class, 'update']);
+   
 
     /**
      * Roles
