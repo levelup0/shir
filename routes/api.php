@@ -178,6 +178,9 @@ Route::group([
     ])->middleware('auth:api');;
 
     Route::post('aprove/{aprove}', [AproveController::class, 'update'])->middleware('auth:api');
+
+    Route::post('aprove-update-status', [AproveController::class, 'updateStatus'])->middleware('auth:api');
+    
 });
 
 Route::group([

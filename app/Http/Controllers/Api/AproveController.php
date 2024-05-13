@@ -51,36 +51,10 @@ class AproveController extends Controller
                 $query->where('status', $status);
             });
         }
-
-        // if (!is_null($type)) {
-        //     $data = $data->where(function ($query) use ($type) {
-        //         $query->where('type', 'like', '%' . $type . '%');
-        //     });
-        // }
-
        
-        
-        // if (!is_null($languageFilter)) {
-        //     LanguageFilter::execute($data, json_decode($languageFilter, true));
-        // }
-
-        // if (!is_null($languageFilterNew)) {
-        //     LanguageFilter::executeNew($data, $languageFilterNew);
-        // }
         $data = $data->with(['voz', 'user']);
-        
 
         $data->orderBy('id', "desc");
-
-        // if ($sort !== '-1') {
-        //     SortData::execute($data, $sort, 'name');
-        // } else {
-        //     if($publish_date == "1"){
-        //         $data->orderBy('publish_date', "desc");
-        //     }else{
-        //         $data->orderBy('id', "desc");
-        //     }
-        // }
 
         return Success::execute(['data' => $data->paginate($limit)]);
 
@@ -113,8 +87,27 @@ class AproveController extends Controller
 
     public function destroy(Aprove $news): JsonResponse
     {
-        // return Error::execute("News delete is disabled");
         $news->delete();
         return DeleteRes::execute();
+    }
+
+    public function updateStatus(UpdateAproveReq $request)
+    {
+        $data = Aprove::where('id', $request->input('aprove_id'))->first();
+        if(!is_null($data))
+        {
+            $data->status = $request->input('status');
+            $data->save();
+
+            return response()->json([
+                'success' => true,
+                'msg' => 'Заявка успешно принято!'
+            ]);
+        }
+      
+        return response()->json([
+            'success' => false,
+            'msg' => 'Произошла ошибка при добавления данных'
+        ]);
     }
 }
