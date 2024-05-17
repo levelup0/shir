@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\CategoryVozUser;
 use App\Models\Countries;
 use App\Models\CV;
 use App\Models\User;
@@ -11,6 +12,7 @@ use App\Models\UserChats;
 use App\Models\UserMessages;
 use App\Models\UserRole;
 use App\Models\UserRooms;
+use App\Models\VozCategoryRelation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -40,7 +42,7 @@ class AuthenticationController extends Controller
             $response = [
                 'msg' => "Пользователь успешно отправлен",
                 'success'=> true,
-                'user' => User::with('roles')->find(Auth::id())
+                'user' => User::with(['roles', 'category_voz', 'category_voz.category'])->find(Auth::id())
              ];
 
              return response($response, 200);
@@ -95,6 +97,7 @@ class AuthenticationController extends Controller
             $newUser = new User();
             $newUser->name = $request->input('name');
             $newUser->business_sector = $request->input('business_sector');
+
             $newUser->action_sector = $request->input('action_sector');
             
             $newUser->email = $request->input('email');
@@ -109,6 +112,23 @@ class AuthenticationController extends Controller
             $newUser->url_telegram = $request->input('url_telegram');
 
             $newUser->save();
+
+            /**
+             * Сфера бизнеса
+             */
+            $voz_category_relation = $request->input('voz_category_relation');
+
+            if(!empty($voz_category_relation) && $voz_category_relation !=null)
+            {
+                $decodeds = json_decode($voz_category_relation, true);
+                
+                foreach ($decodeds as $d) {
+                    $newData = new CategoryVozUser();
+                    $newData->user_id = $newUser->id;
+                    $newData->category_voz_id = $d['id'];
+                    $newData->save();
+                }
+            }
 
             /**
              * Тут как раз добавляем CV
@@ -384,8 +404,35 @@ class AuthenticationController extends Controller
         $currentUser->interes = $request['interes'];
         $currentUser->url_telegram = $request['url_telegram'];
         
-        
         $currentUser->save();
+
+        /**
+         * Сфера бизнеса
+         */
+        $voz_category_relation = $request->input('voz_category_relation');
+
+        // remove current category
+        $currentDatas = CategoryVozUser::where('user_id', $currentUser->id)->get();
+
+        if($currentDatas->count() > 0)
+        {
+            foreach ($currentDatas as $currentData) {
+                CategoryVozUser::destroy($currentData->id);
+            }
+        }
+
+        //Create new category
+        if(!empty($voz_category_relation) && $voz_category_relation !=null)
+        {
+            $decodeds = json_decode($voz_category_relation, true);
+            
+            foreach ($decodeds as $d) {
+                $newData = new CategoryVozUser();
+                $newData->user_id = $currentUser->id;
+                $newData->category_voz_id = $d['id'];
+                $newData->save();
+            }
+        }
 
         return response()->json([
             'success' => true,

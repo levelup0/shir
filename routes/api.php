@@ -96,7 +96,7 @@ Route::group([
      /**
      * Category Voz
      */
-    Route::get('category-voz', [CategoryVozController::class, 'index'])->middleware('auth:api');
+    Route::get('category-voz', [CategoryVozController::class, 'index']);
    
      /**
      * Subscription Month

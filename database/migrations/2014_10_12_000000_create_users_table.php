@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('url_telegram')->nullable(); //Телеграм URL
         
             // $table->string('vuz')->nullable(); //ВУЗ
-            // $table->string('education_course')->nullable(); //ВУЗ
+            // $table->string('education_course')->nullable(); //Курс обучения
             // $table->string('interes')->nullable(); //Краткое описание своих интересов
             
             $table->string('email')->unique();

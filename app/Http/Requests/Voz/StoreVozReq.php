@@ -29,9 +29,10 @@ class StoreVozReq extends FormRequest
             'description' => ['required'],
             'publish_date' => ['required'],
             'end_date' => ['required'],
-            'category_voz_id' => ['required'],
+            'category_voz_id' => [],
             'user_id' => [],
             'status' => [],
+            'voz_category_relation' => [],
         ];
     }
 }

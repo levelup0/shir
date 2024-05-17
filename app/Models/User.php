@@ -88,10 +88,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(CV::class, "user_id", "id");
     }
-    
 
     public function roles()
     {
         return $this->hasOne(UserRole::class, "id", "user_role_id");
+    }
+
+    public function category_voz()
+    {
+        return $this->hasMany(CategoryVozUser::class, "user_id", "id");
     }
 }

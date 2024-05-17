@@ -12,9 +12,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Voz\StoreVozReq;
 use App\Http\Requests\Voz\UpdateVozReq;
 use App\Models\Voz;
+use App\Models\VozCategoryRelation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class VozController extends Controller
 {
@@ -70,7 +72,7 @@ class VozController extends Controller
         // if (!is_null($languageFilterNew)) {
         //     LanguageFilter::executeNew($data, $languageFilterNew);
         // }
-        $data = $data->with(['category', 'user']);
+        $data = $data->with(['user', 'category_voz', 'category_voz.category']);
         
 
         $data->orderBy('id', "desc");
@@ -93,9 +95,24 @@ class VozController extends Controller
         $data = $request->validated();
         $data['user_id'] = Auth::user()->id;
         $data['status'] = 'created';
+        
         $response = Voz::create($data);
-        // if ($request->hasFile('image'))
-        //     StoreUpdateImage::execute($response, $request->file('image'));
+
+        $voz_category_relation = $data['voz_category_relation'];
+        Log::info($response->id);
+
+        Log::info(print_r($voz_category_relation, true));
+
+        if(!empty($voz_category_relation) && $voz_category_relation !=null)
+        {
+            $decodeds = json_decode($voz_category_relation, true);
+            foreach ($decodeds as $d) {
+                $newData = new VozCategoryRelation();
+                $newData->voz_id =  $response->id;
+                $newData->category_voz_id = $d['id'];
+                $newData->save();
+            }
+        }
 
         return Success::execute(['data' => $response]);
     }
@@ -118,7 +135,7 @@ class VozController extends Controller
 
     public function show($id)
     {
-        $data = Voz::where('id', $id)->with(['category', 'user'])->first();
+        $data = Voz::where('id', $id)->with(['user','category_voz', 'category_voz.category'])->first();
         return Success::execute(['data' => $data]);
     }
 

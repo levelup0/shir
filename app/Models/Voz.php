@@ -17,7 +17,7 @@ class Voz extends Model {
         'end_date',
         'user_id',
         'status',
-        'category_voz_id',
+        // 'category_voz_id',
     ];
 
     public function category()
@@ -29,7 +29,10 @@ class Voz extends Model {
     {
         return $this->hasOne(User::class, "id", "user_id");
     }
-
   
+    public function category_voz()
+    {
+        return $this->hasMany(VozCategoryRelation::class, "voz_id", "id");
+    }
 
 }

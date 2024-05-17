@@ -68,7 +68,7 @@ class UsersController extends Controller
             DateFilter::execute($data, json_decode($dateFilter));
         }
 
-        $data = $data->with(['roles','cv']);
+        $data = $data->with(['roles','cv', 'category_voz', 'category_voz.category']);
         
         // if ($sort !== '-1') {
         //     SortData::execute($data, $sort, 'title');
