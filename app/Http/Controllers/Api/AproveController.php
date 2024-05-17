@@ -52,7 +52,7 @@ class AproveController extends Controller
             });
         }
        
-        $data = $data->with(['voz', 'user']);
+        $data = $data->with(['voz', 'user', 'voz.category_voz', 'voz.category_voz.category']);
 
         $data->orderBy('id', "desc");
 
