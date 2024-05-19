@@ -27,6 +27,7 @@ class User extends Authenticatable
         'vuz',
         'education_course',
         'interes',
+        'company',
 
 
          'action_sector',
@@ -71,6 +72,7 @@ class User extends Authenticatable
         'vuz',
         'education_course',
         'interes',
+        'company',
 
         'user_role_id',
         'user_id_created',

@@ -29,11 +29,8 @@ class UsersStoreReq extends FormRequest
             'password'=>['required', 'string'],
             'user_role_id'=>['required', 'string'],
             'user_id_created' => [],
-            'phone' => []
-            // 'remove_image' => [],
-            // 'image' => [],
-            //'image' => ['required', 'image', 'mimes:jpeg,jpg,png', "dimensions:max_width=2048, max_height=2048", 'max:2048'],
-            // 'status' => ['required', 'string', 'in:0,1'],
+            'phone' => [],
+            'company' => []
         ];
     }
 }

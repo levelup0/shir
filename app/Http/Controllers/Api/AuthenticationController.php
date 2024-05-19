@@ -99,6 +99,7 @@ class AuthenticationController extends Controller
             $newUser->business_sector = $request->input('business_sector');
 
             $newUser->action_sector = $request->input('action_sector');
+            $newUser->company = $request->input('company');
             
             $newUser->email = $request->input('email');
             $newUser->password = $request->input('password');
@@ -372,7 +373,7 @@ class AuthenticationController extends Controller
   public function passwordUpdate(Request $request)
   {
     $validator = Validator::make($request->all(), [
-        'password' => 'required|string|min:6',
+        // 'password' => 'required|string|min:6',
         'name' => 'string'
     ]);
 
@@ -392,11 +393,16 @@ class AuthenticationController extends Controller
 
     if(!is_null($currentUser))
     {
-        $currentUser->password = Hash::make($request['password']);
+        if(!empty($request['password']) && $request['password'] != null)
+        {
+            $currentUser->password = Hash::make($request['password']);
+        }
+
         $currentUser->name = $request['name'];
         $currentUser->avatar = $request['avatar'];
         $currentUser->business_sector = $request['business_sector'];
         $currentUser->action_sector = $request['action_sector'];
+        $currentUser->company = $request['company'];
 
         $currentUser->date_birth = $request['date_birth'];
         $currentUser->vuz = $request['vuz'];
@@ -422,17 +428,22 @@ class AuthenticationController extends Controller
         }
 
         //Create new category
-        if(!empty($voz_category_relation) && $voz_category_relation !=null)
-        {
-            $decodeds = json_decode($voz_category_relation, true);
-            
-            foreach ($decodeds as $d) {
-                $newData = new CategoryVozUser();
-                $newData->user_id = $currentUser->id;
-                $newData->category_voz_id = $d['id'];
-                $newData->save();
+        try{
+            if(!empty($voz_category_relation) && $voz_category_relation !=null)
+            {
+                $decodeds = json_decode($voz_category_relation, true);
+                
+                foreach ($decodeds as $d) {
+                    $newData = new CategoryVozUser();
+                    $newData->user_id = $currentUser->id;
+                    $newData->category_voz_id = $d['id'];
+                    $newData->save();
+                }
             }
+        }catch(\Exception $e){
+
         }
+       
 
         return response()->json([
             'success' => true,

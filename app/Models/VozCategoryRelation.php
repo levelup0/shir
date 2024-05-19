@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class VozCategoryRelation extends Model {
     use HasFactory;
 
-    protected $table = 'voz_category_relation';
+    protected $table = 'voz_category_relation_dublicate';
 
     protected $fillable = [
         'voz_id',
