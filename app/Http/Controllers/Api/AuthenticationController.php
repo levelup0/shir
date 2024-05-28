@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\CategoryVozUser;
+use App\Models\Codes;
 use App\Models\Countries;
 use App\Models\CV;
 use App\Models\User;
@@ -61,6 +62,7 @@ class AuthenticationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
+            'code' => 'required|string|max:255',
             'type_user' => 'in:0,1',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
@@ -74,6 +76,29 @@ class AuthenticationController extends Controller
              ];
 
             return response($response, 200);
+        }
+
+        //Check if code exist
+        $codeExist = Codes::where('name',  $request->input("code"))->first();
+        
+        if(is_null($codeExist))
+        {
+            $response = [
+                'msg' => 'Код не правильный',
+                'success'=> false,
+             ];
+
+            return response($response, 200);
+        }
+
+        if(!is_null($codeExist->user_id))
+        {
+            $response = [
+                'msg' => 'Код привязан',
+                'success'=> false,
+             ];
+
+            return response($response, 200); 
         }
 
         $type_user = $request->input("type_user");
@@ -114,6 +139,8 @@ class AuthenticationController extends Controller
 
             $newUser->save();
 
+            $codeExist->user_id = $newUser->id;
+            $codeExist->save();
             /**
              * Сфера бизнеса
              */
