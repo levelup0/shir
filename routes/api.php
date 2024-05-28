@@ -138,6 +138,7 @@ Route::group([
     Route::post('cv/{cv}', [CvController::class, 'update'])->middleware('auth:api');
 
     Route::get('contact-assets/{id}', [CvController::class, 'contactAssets']);
+    Route::get('contact-assets-voz-files/{id}', [CvController::class, 'contactAssetsVozFiles']);
 
     /**
      * Voz Main

@@ -35,4 +35,9 @@ class Voz extends Model {
         return $this->hasMany(VozCategoryRelation::class, "voz_id", "id");
     }
 
+    public function voz_file()
+    {
+        return $this->hasMany(VozFiles::class, "voz_id", "id");
+    }
+
 }

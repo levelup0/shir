@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cv\StoreCvReq;
 use App\Http\Requests\Cv\UpdateCvReq;
 use App\Models\CV;
+use App\Models\VozFiles;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Auth;
 class CvController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth:api')->except('index', 'show','contactAssets');
+        $this->middleware('auth:api')->except('index', 'show','contactAssets','contactAssetsVozFiles');
     }
     
     public function index(Request $request): JsonResponse
@@ -161,4 +162,14 @@ class CvController extends Controller
 
         return response()->file(storage_path('app/files/'.$data->user_id.'/'.$data->src));
     }
+
+    public function contactAssetsVozFiles($file)
+    {
+        $data = VozFiles::where('src', $file)->first();
+
+        return response()->file(storage_path('app/voz_files/'.$data->voz_id.'/'.$data->src));
+    }
+
+
+    
 }

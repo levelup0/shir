@@ -71,7 +71,7 @@ class VozMainController extends Controller
         //     LanguageFilter::executeNew($data, $languageFilterNew);
         // }
         // $data = $data->with(['category', 'user']);
-        $data = $data->with(['user', 'category_voz', 'category_voz.category']);
+        $data = $data->with(['user', 'category_voz', 'category_voz.category','voz_file']);
 
         $data->orderBy('id', "desc");
 
@@ -91,7 +91,7 @@ class VozMainController extends Controller
 
     public function show($id)
     {
-        $data = Voz::where('id', $id)->with(['user','category_voz', 'category_voz.category'])->first();
+        $data = Voz::where('id', $id)->with(['user','category_voz', 'category_voz.category','voz_file'])->first();
         return Success::execute(['data' => $data]);
     }
 

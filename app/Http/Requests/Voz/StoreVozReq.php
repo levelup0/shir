@@ -33,6 +33,7 @@ class StoreVozReq extends FormRequest
             'user_id' => [],
             'status' => [],
             'voz_category_relation' => [],
+            'files' => [],
         ];
     }
 }

@@ -13,6 +13,7 @@ use App\Http\Requests\Voz\StoreVozReq;
 use App\Http\Requests\Voz\UpdateVozReq;
 use App\Models\Voz;
 use App\Models\VozCategoryRelation;
+use App\Models\VozFiles;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -72,7 +73,7 @@ class VozController extends Controller
         // if (!is_null($languageFilterNew)) {
         //     LanguageFilter::executeNew($data, $languageFilterNew);
         // }
-        $data = $data->with(['user', 'category_voz', 'category_voz.category']);
+        $data = $data->with(['user', 'category_voz', 'category_voz.category','voz_file']);
         
 
         $data->orderBy('id', "desc");
@@ -114,6 +115,36 @@ class VozController extends Controller
             }
         }
 
+        /**
+         * Тут как раз добавляем файлы с вызовам
+         */
+        $_files = json_decode($data['files']);
+
+        if (!empty($_files)) {
+            foreach ($_files as $file) {
+                if (!is_dir(storage_path('app/voz_files/'.$response->id))) {
+                    mkdir(storage_path('app/voz_files/'.$response->id), 0777, true);
+                }
+    
+                $random_name = md5(rand(11111, 99999));
+                $file_name = $file->file_name;
+                $file_format = $file->file_format;
+                $file_size = $file->file_size;
+                $content= base64_decode($file->base64);
+                $file = fopen(storage_path('app/voz_files/'.$response->id.'/'.$random_name.'.'.$file_format), 'w');
+                fwrite($file, $content);
+                fclose($file);
+    
+                $new_assets = new VozFiles();
+                $new_assets->voz_id = $response->id;
+                $new_assets->format = $file_format;
+                $new_assets->src = $random_name.'.'.$file_format;
+                $new_assets->size = $file_size;
+                $new_assets->name = $file_name;
+                $new_assets->save();
+            }
+        }
+
         return Success::execute(['data' => $response]);
     }
 
@@ -135,7 +166,7 @@ class VozController extends Controller
 
     public function show($id)
     {
-        $data = Voz::where('id', $id)->with(['user','category_voz', 'category_voz.category'])->first();
+        $data = Voz::where('id', $id)->with(['user','category_voz', 'category_voz.category', 'voz_file'])->first();
         return Success::execute(['data' => $data]);
     }
 
