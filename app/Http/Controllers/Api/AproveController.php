@@ -99,9 +99,20 @@ class AproveController extends Controller
             $data->status = $request->input('status');
             $data->save();
 
+            $msg = '';
+            if($request->input('status') == 'approved')
+            {
+                $msg = 'Заявка успешно принято!';
+            }
+
+            if($request->input('status') == 'in_progress')
+            {
+                $msg = 'Принятие заявки отозвано!';
+            }
+
             return response()->json([
                 'success' => true,
-                'msg' => 'Заявка успешно принято!'
+                'msg' => $msg
             ]);
         }
       

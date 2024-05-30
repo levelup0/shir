@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Codes;
 use Illuminate\Database\Seeder;
 
-class CodeSeeder extends Seeder
+class CodeCallerSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,16 +16,16 @@ class CodeSeeder extends Seeder
         {
           $random = mt_rand(33, 126000);
           $result = $this->createHash($random);
-          $checkIfExist = Codes::where('name', $result)->where('type','recipient')->first();
+          $checkIfExist = Codes::where('name', $result)->where('type','caller')->first();
 
           if(!is_null($checkIfExist))
           {
             continue;
           }
-          var_dump("https://storm-track.ru/register?type_user=0&code=". $result);
+          var_dump("https://storm-track.ru/register?type_user=1&code=". $result);
           Codes::updateOrCreate([
             'name' => $result,
-            'type' => 'recipient'
+            'type' => 'caller'
           ]);
         }
     }

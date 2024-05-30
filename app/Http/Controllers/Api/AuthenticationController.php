@@ -78,28 +78,7 @@ class AuthenticationController extends Controller
             return response($response, 200);
         }
 
-        //Check if code exist
-        $codeExist = Codes::where('name',  $request->input("code"))->first();
-        
-        if(is_null($codeExist))
-        {
-            $response = [
-                'msg' => 'Код не правильный',
-                'success'=> false,
-             ];
-
-            return response($response, 200);
-        }
-
-        if(!is_null($codeExist->user_id))
-        {
-            $response = [
-                'msg' => 'Код привязан',
-                'success'=> false,
-             ];
-
-            return response($response, 200); 
-        }
+       
 
         $type_user = $request->input("type_user");
         $user_role = null;
@@ -108,11 +87,56 @@ class AuthenticationController extends Controller
 
             Log::info('1'); // Вызоводатель
             $user_role = UserRole::where('name', 'caller')->first();
+             //Check if code exist
+            $codeExist = Codes::where('name',  $request->input("code"))->where('type', 'caller')->first();
+            
+            if(is_null($codeExist))
+            {
+                $response = [
+                    'msg' => 'Неверный код регистрации',
+                    'success'=> false,
+                ];
+
+                return response($response, 200);
+            }
+
+            if(!is_null($codeExist->user_id))
+            {
+                $response = [
+                    'msg' => 'Код привязан',
+                    'success'=> false,
+                ];
+
+                return response($response, 200); 
+            }
         }
 
         if($type_user == '0'){
             Log::info('0'); // Вызовополучатель
             $user_role = UserRole::where('name', 'recipient')->first();
+
+            //Check if code exist
+            $codeExist = Codes::where('name',  $request->input("code"))->where('type', 'recipient')->first();
+            
+            if(is_null($codeExist))
+            {
+                $response = [
+                    'msg' => 'Неверный код регистрации',
+                    'success'=> false,
+                ];
+
+                return response($response, 200);
+            }
+
+            if(!is_null($codeExist->user_id))
+            {
+                $response = [
+                    'msg' => 'Код привязан',
+                    'success'=> false,
+                ];
+
+                return response($response, 200); 
+            }
         }
 
         if(!is_null($user_role))
@@ -436,7 +460,6 @@ class AuthenticationController extends Controller
         $currentUser->education_course = $request['education_course'];
         $currentUser->interes = $request['interes'];
         $currentUser->url_telegram = $request['url_telegram'];
-        
         $currentUser->save();
 
         /**
