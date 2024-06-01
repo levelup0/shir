@@ -38,6 +38,6 @@ class CodeCallerSeeder extends Seeder
       // Trim base64 padding characters from the end.
       $hash_urlsafe = rtrim( $hash_urlsafe, '=' );
       // Shorten the string before returning.
-      return substr( $hash_urlsafe, 0, 4 );
+      return substr( $hash_urlsafe, 0, 6 );
     }
 }
