@@ -15,9 +15,10 @@ use App\Models\Aprove;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Traits\UserSentEmail;
 class AproveController extends Controller
 {
+    use UserSentEmail;
     public function __construct(){
         $this->middleware('auth:api')->except('index', 'show');
     }
@@ -64,6 +65,8 @@ class AproveController extends Controller
         $data = $request->validated();
         $response = Aprove::create($data);
 
+        $this->sendEmail($data);
+
         return Success::execute(['data' => $response]);
     }
 
@@ -104,6 +107,9 @@ class AproveController extends Controller
             if($request->input('status') == 'approved')
             {
                 $msg = 'Заявка успешно принято!';
+
+                $this->sendEmail2($data);
+
             }
 
             if($request->input('status') == 'in_progress')
