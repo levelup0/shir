@@ -3,7 +3,7 @@
 
 namespace App\Actions\Common;
 
- 
+use App\Models\Aprove;
 use App\Models\Countries;
 use App\Models\CV;
 use App\Models\SubscriptionMonth;
@@ -60,6 +60,10 @@ class MassAction
 
             case 'cv':
                 $model = app(CV::class);
+            break; 
+
+            case 'aprove':
+                $model = app(Aprove::class);
             break; 
         }
 
@@ -198,6 +202,19 @@ class MassAction
                             foreach($datas as $data)
                             {
                                 File::delete(public_path('images/cv/').$data->image);
+                            }
+                        }catch(\Exception $e){
+                            Log::error($e->getMessage());
+                        }
+                    break;
+
+                    
+                    case  'aprove':
+                        try{
+                            $datas = $model::whereIn('id', $ids)->get();
+                            foreach($datas as $data)
+                            {
+                                File::delete(public_path('images/aprove/').$data->image);
                             }
                         }catch(\Exception $e){
                             Log::error($e->getMessage());

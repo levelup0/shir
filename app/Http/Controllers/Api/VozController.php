@@ -176,4 +176,35 @@ class VozController extends Controller
         $news->delete();
         return DeleteRes::execute();
     }
+
+    public function updateStatus(Request $request)
+    {
+        $data = Voz::where('id', $request->input('voz_id'))->first();
+        if(!is_null($data))
+        {
+            $data->status = $request->input('status');
+            $data->save();
+
+            $msg = '';
+            if($request->input('status') == 'closed')
+            {
+                $msg = 'Сбор заявок завершен!';
+            }
+
+            // if($request->input('status') == 'in_progress')
+            // {
+            //     $msg = 'Принятие заявки отозвано!';
+            // }
+
+            return response()->json([
+                'success' => true,
+                'msg' => $msg
+            ]);
+        }
+      
+        return response()->json([
+            'success' => false,
+            'msg' => 'Произошла ошибка при добавления данных'
+        ]);
+    }
 }

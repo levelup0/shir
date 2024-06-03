@@ -125,6 +125,8 @@ Route::group([
 
     Route::post('voz/{voz}', [VozController::class, 'update'])->middleware('auth:api');
 
+    Route::post('voz-update-status', [VozController::class, 'updateStatus'])->middleware('auth:api');
+
     /**
      * CV
      */

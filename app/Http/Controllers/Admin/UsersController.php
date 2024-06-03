@@ -152,7 +152,7 @@ class UsersController extends Controller
 
     public function show($id)
     {
-        $data = User::where('id', $id)->first();
+        $data = User::where('id', $id)->with(['roles','cv', 'category_voz', 'category_voz.category'])->first();
         return Success::execute(['data' => $data]);
     }
 
