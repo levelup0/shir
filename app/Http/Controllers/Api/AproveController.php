@@ -72,6 +72,7 @@ class AproveController extends Controller
       
         $aprove->user_id = Auth::user()->id;
         $aprove->voz_id = $request->name;
+        $aprove->text = $request->text;
         $aprove->status = 'in_progress';
         $aprove->save();
 

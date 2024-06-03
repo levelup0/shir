@@ -12,6 +12,7 @@ class Aprove extends Model {
     protected $fillable = [
         'voz_id',
         'user_id',
+        'text',
         'status',
     ];
 

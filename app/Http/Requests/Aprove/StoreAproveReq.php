@@ -26,6 +26,7 @@ class StoreAproveReq extends FormRequest
         return [
             'voz_id' => ['required'],
             'user_id' => ['required'],
+            'text' => [],
             'status' => [],
         ];
     }
