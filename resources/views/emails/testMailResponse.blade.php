@@ -21,11 +21,8 @@
 
 <body>
     <div class="container">
+        <h1>{{ $testMailData['title'] }}</h1>
         <div class="div1">
-            <div class="div2">
-                <p style="color: black;">Тема:</p>
-                <span style="font-weight: 600;color: black;">{{ $testMailData['title'] }}</span>
-            </div>
             <div class="div2">
                 <p style="color: black;">Текст:</p>
                 <span style="font-weight: 600;color: black;">{{ $testMailData['text_1'] }}</span>
